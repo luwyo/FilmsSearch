@@ -6,16 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.gb.course1.filmssearch.R
 
 class FavoriteAdapter : RecyclerView.Adapter<FavoriteViewHolder>() {
-    //временно создаем исходные данные непосредственно в адаптере, для проверки работоспособности
-    var items: ArrayList<String> = arrayListOf(
-        "Первый фильм",
-        "Второй фильм",
-        "Третий фильм",
-        "Четвертый фильм",
-        "Пятый фильм",
-        "Шестой фильм",
-        "Седьмой фильм"
-    )
+    var items: ArrayList<String> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteViewHolder {
         val root =
@@ -26,9 +17,9 @@ class FavoriteAdapter : RecyclerView.Adapter<FavoriteViewHolder>() {
     override fun onBindViewHolder(holder: FavoriteViewHolder, position: Int) {
         var item = items.get(position)
         holder.textViewNameFavoritesMovie.text = item
-        holder.textViewGenresFavoritesMovie.text = "Какойто жанр, Драма, Задрама"
+        holder.textViewGenresFavoritesMovie.text = "Какой-то жанр, Драма, Дорама"
         holder.textViewRatingFavoritesMovie.text = "8,1"
-        holder.textViewReleaseDataFavoritesMovie.text = "2020 И еще чтототам..."
+        holder.textViewReleaseDataFavoritesMovie.text = "2020 И еще что-то там..."
     }
 
     override fun getItemCount(): Int {

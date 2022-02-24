@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -17,6 +16,11 @@ class RatingsFragment : Fragment() {
     private lateinit var ratingsViewModel: RatingsViewModel
     private lateinit var adapter: RatingBasicAdapter
 
+    override fun onStart() {
+        super.onStart()
+        ratingsViewModel.fetchData()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -25,17 +29,19 @@ class RatingsFragment : Fragment() {
         ratingsViewModel =
             ViewModelProvider(this).get(RatingsViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_ratings, container, false)
-//        val textView: TextView = root.findViewById(R.id.text_ratings)
-//        ratingsViewModel.text.observe(viewLifecycleOwner, Observer {
-//            textView.text = it
-//        })
-        adapter = RatingBasicAdapter()
+        adapter = RatingBasicAdapter(ratingsViewModel)
         return root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var ratingBasicRecyclerView = view.findViewById<RecyclerView>(R.id.rating_basic_list)
+        val ratingBasicRecyclerView = view.findViewById<RecyclerView>(R.id.rating_basic_list)
         ratingBasicRecyclerView.adapter = adapter
-        ratingBasicRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        ratingBasicRecyclerView.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        ratingsViewModel.ratingBasicStructureLiveData.observe(viewLifecycleOwner, Observer {
+            adapter.items = it
+            adapter.notifyDataSetChanged()
+        })
     }
 }

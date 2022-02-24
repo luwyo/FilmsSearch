@@ -4,32 +4,25 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ru.gb.course1.filmssearch.R
-import ru.gb.course1.filmssearch.ui.favorites.FavoriteViewHolder
 
-class SearchAdapter : RecyclerView.Adapter<FavoriteViewHolder>() {
-    //временно создаем исходные данные непосредственно в адаптере, для проверки работоспособности
-    var items: ArrayList<String> = arrayListOf(
-        "Рез. поиска - фильм 1",
-        "Рез. поиска - фильм 2",
-        "Рез. поиска - фильм 3",
-        "Рез. поиска - фильм 4",
-        "Рез. поиска - фильм 5",
-        "Рез. поиска - фильм 6",
-        "Рез. поиска - фильм 7"
-    )
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteViewHolder {
+class SearchAdapter : RecyclerView.Adapter<SearchViewHolder>() {
+    var items: ArrayList<String> = ArrayList()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
+        //применена разметка от элемента списка избранных фильмов - сознательно. для экономии времени и проверки работоспособности.
+        //пока он будет абсолютно таким-же, потом может заменю.
         val root =
             LayoutInflater.from(parent.context).inflate(R.layout.item_favorites, parent, false)
-        return FavoriteViewHolder(root)
+        return SearchViewHolder(root)
     }
 
-    override fun onBindViewHolder(holder: FavoriteViewHolder, position: Int) {
-        var item = items.get(position)
+    override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
+        val item = items.get(position)
         holder.textViewNameFavoritesMovie.text = item
-        holder.textViewGenresFavoritesMovie.text = "Какойто жанр, Драма, Задрама"
+        holder.textViewGenresFavoritesMovie.text = "Какой-то жанр, Драма, дорама"
         holder.textViewRatingFavoritesMovie.text = "8,1"
-        holder.textViewReleaseDataFavoritesMovie.text = "2020 И еще чтототам..."
+        holder.textViewReleaseDataFavoritesMovie.text = "2020 И еще что-то там..."
     }
 
     override fun getItemCount(): Int {
