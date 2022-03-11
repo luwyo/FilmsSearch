@@ -2,14 +2,22 @@ package ru.gb.course1.filmssearch.ui.ratings
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import ru.gb.course1.filmssearch.R
-import ru.gb.course1.filmssearch.domain.ListMovies
+import ru.gb.course1.filmssearch.domain.GroupResponseObject
+import ru.gb.course1.filmssearch.domain.MovieTMDB
+import ru.gb.course1.filmssearch.ui.OnLoadMoreMovies
 
-class RatingBasicAdapter(_ratingViewModel: RatingsViewModel) :
+class RatingBasicAdapter(_fragment: Fragment) :
     RecyclerView.Adapter<RatingBasicViewHolder>() {
-    val ratingsViewModel: RatingsViewModel = _ratingViewModel
-    var items: ArrayList<ListMovies> = ArrayList()
+    private val ratingsViewModel: RatingsViewModel =
+        ViewModelProvider(_fragment).get(RatingsViewModel::class.java)
+    val fragment: Fragment = _fragment
+    var items: ArrayList<GroupResponseObject> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RatingBasicViewHolder {
         val root =
@@ -18,13 +26,25 @@ class RatingBasicAdapter(_ratingViewModel: RatingsViewModel) :
     }
 
     override fun onBindViewHolder(holder: RatingBasicViewHolder, position: Int) {
-        val item = items.get(position)
-        val currentIdList = item.listId
-        val innerItems = ratingsViewModel.fetchDataListById(currentIdList)
-        holder.basicTitle.text = item.listName
-        holder.adapter.items.clear()
-        holder.adapter.items.addAll(innerItems)
-        holder.adapter.notifyDataSetChanged()
+        val item = items[position]
+        holder.basicTitle.text = item.nameGroupResponse
+        //работа с вложенным адаптером
+        val currentRO = ratingsViewModel.arrGroupList[position]
+        val currentLiveData: LiveData<ArrayList<MovieTMDB>> = currentRO.currentLiveData
+        currentLiveData.observe(fragment.viewLifecycleOwner, Observer {
+            holder.adapter.items = it
+            holder.adapter.setOnLoadMoreMoviesListener(object : OnLoadMoreMovies {
+                override fun onLoadMore() {
+                    if (currentRO.lastAnswer.page < currentRO.lastAnswer.total_pages) {
+                        currentRO.FuncFetch.invoke(
+                            currentRO.standardList.toString(),
+                            currentRO.lastAnswer.page + 1, currentRO
+                        )
+                    }
+                }
+            })
+            holder.adapter.notifyDataSetChanged()
+        })
     }
 
     override fun getItemCount(): Int {
