@@ -14,6 +14,12 @@ object TMDBAPIConstants {
     /** language answer - язык ответа  */
     val LANGUAGE_ANSWER = "ru_RU"
 
+    /** форматная строка сборного адреса картинки  */
+    val POSTER_URL = "$IMAGE_SERVER_URL$POSTER_SIZE%1\$s"
+
+    /** include_adult - признак включения в выборку фильмов для взрослых  */
+    val INCLUDE_ADULT = false
+
     /** временно полный запрос к гостевым выдачам */
     val TEMP_POPULAR_MOVIE = "https://api.themoviedb.org/3/movie/popular?api_key=b09e049a4f2b3d0137bb179ee63e5629&language&language=ru-RU"
     /** временно полный запрос к конфигурационным данным */

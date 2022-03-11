@@ -1,32 +1,39 @@
 package ru.gb.course1.filmssearch.ui.settings
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import ru.gb.course1.filmssearch.R
-
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import ru.gb.course1.filmssearch.databinding.FragmentSettingsBinding
 
 class SettingsFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = SettingsFragment()
+    private val settingsViewModel: SettingsViewModel by viewModels {
+        SettingsViewModelFactory(requireActivity().application)
+    }
+    private var _binding: FragmentSettingsBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        val root = binding.root
+        val textView = binding.textSettings
+        settingsViewModel.text.observe(viewLifecycleOwner, { textView.text = it })
+        return root
     }
 
-    private lateinit var viewModel: SettingsViewModel
+    override fun onPause() {
+        super.onPause()
+        settingsViewModel.text.removeObservers(this)
+    }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?
-    ): View? {
-        viewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
-        val root = inflater.inflate(R.layout.settings_fragment, container, false)
-        val textView: TextView = root.findViewById(R.id.text_settings)
-        viewModel.text.observe(viewLifecycleOwner, Observer { textView.text = it })
-        return root
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
